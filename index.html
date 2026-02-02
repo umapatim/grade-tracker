@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Grades">
+<title>Grade Tracker</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --blue: #4a90d9;
+  --blue-light: #e8f0fe;
+  --green: #34a853;
+  --yellow: #f9ab00;
+  --red: #ea4335;
+  --gray: #5f6368;
+  --gray-light: #f1f3f4;
+  --gray-border: #dadce0;
+  --white: #ffffff;
+  --bg: #f8f9fa;
+  --text: #202124;
+  --radius: 12px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Header */
+.header {
+  background: var(--blue);
+  color: white;
+  padding: 16px 20px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header h1 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.tabs {
+  display: flex;
+  gap: 0;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px 16px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.7);
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab.active {
+  color: white;
+  border-bottom-color: white;
+}
+
+/* Main content */
+.content {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* Card */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.card h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--gray);
+}
+
+/* Form */
+.form-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--gray);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group select {
+  padding: 12px;
+  border: 2px solid var(--gray-border);
+  border-radius: 8px;
+  font-size: 16px;
+  background: var(--white);
+  color: var(--text);
+  -webkit-appearance: none;
+  appearance: none;
+  min-height: 48px;
+}
+
+.form-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235f6368' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+
+.score-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.score-input input {
+  width: 80px;
+  text-align: center;
+}
+
+.score-input .divider {
+  font-size: 20px;
+  color: var(--gray);
+  font-weight: 300;
+}
+
+.btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 48px;
+  transition: opacity 0.2s;
+}
+
+.btn:active { opacity: 0.8; }
+
+.btn-primary {
+  background: var(--blue);
+  color: white;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--blue);
+  border: 2px solid var(--blue);
+}
+
+.btn-small {
+  width: auto;
+  padding: 8px 16px;
+  font-size: 13px;
+  min-height: 36px;
+}
+
+.btn-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.btn-row .btn { flex: 1; }
+
+/* Toast / feedback */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #323232;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  z-index: 999;
+  transition: transform 0.3s ease;
+  white-space: nowrap;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Grade table */
+.grade-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.grade-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 6px;
+  border-bottom: 2px solid var(--gray-border);
+}
+
+.grade-table td {
+  padding: 10px 6px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--gray-light);
+  vertical-align: middle;
+}
+
+.grade-table tr:last-child td {
+  border-bottom: none;
+}
+
+.grade-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 32px;
+  text-align: center;
+}
+
+.grade-a { background: #e6f4ea; color: #1e7e34; }
+.grade-b { background: #e8f0fe; color: #1967d2; }
+.grade-c { background: #fef7e0; color: #b06000; }
+.grade-d { background: #fce8e6; color: #c5221f; }
+.grade-f { background: #fce8e6; color: #c5221f; }
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px 8px;
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-btn:hover { color: var(--red); }
+
+.empty-state {
+  text-align: center;
+  padding: 32px 16px;
+  color: var(--gray);
+}
+
+.empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state p { font-size: 14px; }
+
+/* Reports */
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-card {
+  background: var(--gray-light);
+  border-radius: 8px;
+  padding: 14px;
+  text-align: center;
+}
+
+.stat-card .value {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.stat-card .label {
+  font-size: 11px;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+.stat-card.full-width {
+  grid-column: 1 / -1;
+}
+
+/* Bar chart */
+.bar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bar-label {
+  width: 70px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.bar-track {
+  flex: 1;
+  height: 28px;
+  background: var(--gray-light);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.5s ease;
+  min-width: 2px;
+}
+
+.bar-value {
+  width: 55px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  flex-shrink: 0;
+}
+
+/* Filter pills */
+.filter-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-pill {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--gray-border);
+  background: var(--white);
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--gray);
+  min-height: 36px;
+}
+
+.filter-pill.active {
+  background: var(--blue);
+  color: white;
+  border-color: var(--blue);
+}
+
+/* Trend chart */
+.trend-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.trend-container svg {
+  display: block;
+}
+
+/* Data management */
+.data-section {
+  padding-top: 8px;
+}
+
+.data-section p {
+  font-size: 13px;
+  color: var(--gray);
+  margin-bottom: 12px;
+}
+
+/* Responsive */
+@media (max-width: 400px) {
+  .form-row { flex-direction: column; gap: 10px; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .grade-table th, .grade-table td { padding: 8px 4px; font-size: 13px; }
+  .bar-label { width: 55px; font-size: 12px; }
+}
+
+/* Hidden file input */
+#importFile { display: none; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Grade Tracker</h1>
+  <div class="tabs">
+    <button class="tab active" data-tab="enter">Enter Grade</button>
+    <button class="tab" data-tab="reports">Reports</button>
+  </div>
+</div>
+
+<div class="content">
+  <!-- ENTER GRADE PAGE -->
+  <div id="page-enter" class="page active">
+    <div class="card">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="gradeDate">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Subject</label>
+          <select id="gradeSubject">
+            <option value="">Select...</option>
+            <option>English</option>
+            <option>Latin</option>
+            <option>History</option>
+            <option>Science</option>
+            <option>Math</option>
+            <option>Religion</option>
+            <option>Arts</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select id="gradeType">
+            <option value="">Select...</option>
+            <option>Quiz</option>
+            <option>Test</option>
+            <option>Paper</option>
+            <option>Project</option>
+            <option>Exam</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Score</label>
+          <div class="score-input">
+            <input type="number" id="gradeEarned" placeholder="pts" min="0" inputmode="decimal">
+            <span class="divider">/</span>
+            <input type="number" id="gradePossible" placeholder="total" min="1" inputmode="decimal">
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary" id="submitGrade">Add Grade</button>
+    </div>
+
+    <div class="card">
+      <h2>Recent Grades</h2>
+      <div id="recentGrades"></div>
+    </div>
+
+    <div class="card data-section">
+      <h2>Data</h2>
+      <p>Export to back up your grades or transfer between devices.</p>
+      <div class="btn-row">
+        <button class="btn btn-outline btn-small" id="exportBtn">Export</button>
+        <button class="btn btn-outline btn-small" id="importBtn">Import</button>
+      </div>
+      <input type="file" id="importFile" accept=".json">
+    </div>
+  </div>
+
+  <!-- REPORTS PAGE -->
+  <div id="page-reports" class="page">
+    <div class="card">
+      <h2>Overview</h2>
+      <div class="stat-grid" id="overviewStats"></div>
+    </div>
+
+    <div class="card">
+      <h2>By Subject</h2>
+      <div id="subjectChart"></div>
+    </div>
+
+    <div class="card">
+      <h2>By Test Type</h2>
+      <div id="typeChart"></div>
+    </div>
+
+    <div class="card">
+      <h2>Trend</h2>
+      <div class="filter-row" id="trendFilter"></div>
+      <div class="trend-container" id="trendChart"></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ---- DATA LAYER ----
+const STORAGE_KEY = 'gradeTracker';
+
+const SUBJECTS = ['English', 'Latin', 'History', 'Science', 'Math', 'Religion', 'Arts'];
+const TYPES = ['Quiz', 'Test', 'Paper', 'Project', 'Exam'];
+
+function loadGrades() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+  } catch { return []; }
+}
+
+function saveGrades(grades) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(grades));
+}
+
+function addGrade(entry) {
+  const grades = loadGrades();
+  grades.unshift(entry);
+  saveGrades(grades);
+}
+
+function deleteGrade(id) {
+  const grades = loadGrades().filter(g => g.id !== id);
+  saveGrades(grades);
+}
+
+// ---- GRADING ----
+function getLetterGrade(pct) {
+  if (pct >= 97) return 'A+';
+  if (pct >= 93) return 'A';
+  if (pct >= 90) return 'A-';
+  if (pct >= 87) return 'B+';
+  if (pct >= 83) return 'B';
+  if (pct >= 80) return 'B-';
+  if (pct >= 77) return 'C+';
+  if (pct >= 73) return 'C';
+  if (pct >= 70) return 'C-';
+  if (pct >= 67) return 'D+';
+  if (pct >= 63) return 'D';
+  if (pct >= 60) return 'D-';
+  return 'F';
+}
+
+function getGradeClass(letter) {
+  const first = letter.charAt(0);
+  return 'grade-' + first.toLowerCase();
+}
+
+function getGPA(pct) {
+  if (pct >= 97) return 4.0;
+  if (pct >= 93) return 4.0;
+  if (pct >= 90) return 3.7;
+  if (pct >= 87) return 3.3;
+  if (pct >= 83) return 3.0;
+  if (pct >= 80) return 2.7;
+  if (pct >= 77) return 2.3;
+  if (pct >= 73) return 2.0;
+  if (pct >= 70) return 1.7;
+  if (pct >= 67) return 1.3;
+  if (pct >= 63) return 1.0;
+  if (pct >= 60) return 0.7;
+  return 0.0;
+}
+
+function getBarColor(pct) {
+  if (pct >= 90) return '#34a853';
+  if (pct >= 80) return '#4a90d9';
+  if (pct >= 70) return '#f9ab00';
+  return '#ea4335';
+}
+
+// ---- UI HELPERS ----
+function $(id) { return document.getElementById(id); }
+
+function showToast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+// ---- TABS ----
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    $('page-' + tab.dataset.tab).classList.add('active');
+    if (tab.dataset.tab === 'reports') renderReports();
+  });
+});
+
+// ---- GRADE ENTRY ----
+function initForm() {
+  const today = new Date().toISOString().split('T')[0];
+  $('gradeDate').value = today;
+}
+
+$('submitGrade').addEventListener('click', () => {
+  const date = $('gradeDate').value;
+  const subject = $('gradeSubject').value;
+  const type = $('gradeType').value;
+  const earned = parseFloat($('gradeEarned').value);
+  const possible = parseFloat($('gradePossible').value);
+
+  if (!date || !subject || !type) {
+    showToast('Please fill in all fields');
+    return;
+  }
+  if (isNaN(earned) || isNaN(possible) || possible <= 0) {
+    showToast('Please enter a valid score');
+    return;
+  }
+  if (earned < 0) {
+    showToast('Score cannot be negative');
+    return;
+  }
+
+  const percentage = Math.round((earned / possible) * 10000) / 100;
+  const letterGrade = getLetterGrade(percentage);
+
+  addGrade({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    date,
+    subject,
+    type,
+    earned,
+    possible,
+    percentage,
+    letterGrade
+  });
+
+  showToast(`${letterGrade} (${percentage}%) added!`);
+
+  // Reset score fields, keep date/subject/type for quick re-entry
+  $('gradeEarned').value = '';
+  $('gradePossible').value = '';
+  $('gradeEarned').focus();
+
+  renderRecent();
+});
+
+// ---- RECENT GRADES TABLE ----
+function renderRecent() {
+  const grades = loadGrades();
+  const container = $('recentGrades');
+
+  if (grades.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">📝</div>
+        <p>No grades yet. Add your first grade above!</p>
+      </div>`;
+    return;
+  }
+
+  const recent = grades.slice(0, 20);
+  let html = `<table class="grade-table">
+    <thead><tr>
+      <th>Date</th><th>Subject</th><th>Type</th><th>Score</th><th>Grade</th><th></th>
+    </tr></thead><tbody>`;
+
+  recent.forEach(g => {
+    html += `<tr>
+      <td>${formatDate(g.date)}</td>
+      <td>${g.subject}</td>
+      <td>${g.type}</td>
+      <td>${g.earned}/${g.possible}</td>
+      <td><span class="grade-badge ${getGradeClass(g.letterGrade)}">${g.letterGrade}</span></td>
+      <td><button class="delete-btn" data-id="${g.id}" title="Delete">&times;</button></td>
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  container.innerHTML = html;
+
+  container.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      deleteGrade(btn.dataset.id);
+      renderRecent();
+      showToast('Grade deleted');
+    });
+  });
+}
+
+// ---- REPORTS ----
+function renderReports() {
+  const grades = loadGrades();
+
+  if (grades.length === 0) {
+    $('overviewStats').innerHTML = '<div class="empty-state" style="grid-column:1/-1"><p>No grades to report on yet.</p></div>';
+    $('subjectChart').innerHTML = '';
+    $('typeChart').innerHTML = '';
+    $('trendChart').innerHTML = '';
+    $('trendFilter').innerHTML = '';
+    return;
+  }
+
+  // Overview stats
+  const allPcts = grades.map(g => g.percentage);
+  const avgPct = allPcts.reduce((a, b) => a + b, 0) / allPcts.length;
+  const avgGPA = grades.map(g => getGPA(g.percentage)).reduce((a, b) => a + b, 0) / grades.length;
+  const avgLetter = getLetterGrade(avgPct);
+
+  $('overviewStats').innerHTML = `
+    <div class="stat-card">
+      <div class="value" style="color:${getBarColor(avgPct)}">${avgLetter}</div>
+      <div class="label">Overall Grade</div>
+    </div>
+    <div class="stat-card">
+      <div class="value">${avgPct.toFixed(1)}%</div>
+      <div class="label">Average</div>
+    </div>
+    <div class="stat-card">
+      <div class="value">${avgGPA.toFixed(2)}</div>
+      <div class="label">GPA</div>
+    </div>
+    <div class="stat-card">
+      <div class="value">${grades.length}</div>
+      <div class="label">Total Grades</div>
+    </div>`;
+
+  // Subject chart
+  renderBarChart('subjectChart', grades, SUBJECTS, 'subject');
+
+  // Type chart
+  renderBarChart('typeChart', grades, TYPES, 'type');
+
+  // Trend chart
+  renderTrendFilter(grades);
+}
+
+function renderBarChart(containerId, grades, categories, field) {
+  const container = $(containerId);
+  let html = '<div class="bar-chart">';
+
+  categories.forEach(cat => {
+    const catGrades = grades.filter(g => g[field] === cat);
+    if (catGrades.length === 0) {
+      html += `<div class="bar-row">
+        <div class="bar-label">${cat}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:0"></div></div>
+        <div class="bar-value" style="color:#ccc">--</div>
+      </div>`;
+      return;
+    }
+
+    const avg = catGrades.reduce((a, g) => a + g.percentage, 0) / catGrades.length;
+    const letter = getLetterGrade(avg);
+    const color = getBarColor(avg);
+
+    html += `<div class="bar-row">
+      <div class="bar-label">${cat}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:${avg}%;background:${color}"></div>
+      </div>
+      <div class="bar-value" style="color:${color}">${avg.toFixed(0)}% ${letter}</div>
+    </div>`;
+  });
+
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// ---- TREND CHART ----
+let trendSubject = 'All';
+
+function renderTrendFilter(grades) {
+  const container = $('trendFilter');
+  const subjects = ['All', ...SUBJECTS];
+
+  container.innerHTML = subjects.map(s =>
+    `<button class="filter-pill ${s === trendSubject ? 'active' : ''}" data-subject="${s}">${s}</button>`
+  ).join('');
+
+  container.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      trendSubject = pill.dataset.subject;
+      renderTrendFilter(grades);
+    });
+  });
+
+  renderTrendChart(grades);
+}
+
+function renderTrendChart(grades) {
+  const container = $('trendChart');
+  let filtered = [...grades];
+  if (trendSubject !== 'All') {
+    filtered = filtered.filter(g => g.subject === trendSubject);
+  }
+
+  if (filtered.length < 2) {
+    container.innerHTML = '<div class="empty-state"><p>Need at least 2 grades to show a trend.</p></div>';
+    return;
+  }
+
+  // Sort by date ascending
+  filtered.sort((a, b) => a.date.localeCompare(b.date));
+
+  const padding = { top: 20, right: 20, bottom: 40, left: 40 };
+  const width = Math.max(filtered.length * 50, 300);
+  const height = 200;
+  const chartW = width - padding.left - padding.right;
+  const chartH = height - padding.top - padding.bottom;
+
+  // Scale
+  const minPct = Math.max(0, Math.min(...filtered.map(g => g.percentage)) - 5);
+  const maxPct = Math.min(100, Math.max(...filtered.map(g => g.percentage)) + 5);
+  const range = maxPct - minPct || 1;
+
+  function x(i) { return padding.left + (i / (filtered.length - 1)) * chartW; }
+  function y(pct) { return padding.top + chartH - ((pct - minPct) / range) * chartH; }
+
+  // Build path
+  let pathD = filtered.map((g, i) =>
+    `${i === 0 ? 'M' : 'L'} ${x(i).toFixed(1)} ${y(g.percentage).toFixed(1)}`
+  ).join(' ');
+
+  // Grid lines
+  let gridLines = '';
+  for (let pct = Math.ceil(minPct / 10) * 10; pct <= maxPct; pct += 10) {
+    const yy = y(pct).toFixed(1);
+    gridLines += `<line x1="${padding.left}" y1="${yy}" x2="${width - padding.right}" y2="${yy}" stroke="#e0e0e0" stroke-dasharray="4"/>`;
+    gridLines += `<text x="${padding.left - 6}" y="${yy}" text-anchor="end" font-size="10" fill="#999" dy="3">${pct}%</text>`;
+  }
+
+  // Points and labels
+  let points = filtered.map((g, i) => {
+    const cx = x(i).toFixed(1);
+    const cy = y(g.percentage).toFixed(1);
+    const color = getBarColor(g.percentage);
+    const label = formatDate(g.date);
+    return `
+      <circle cx="${cx}" cy="${cy}" r="5" fill="${color}" stroke="white" stroke-width="2"/>
+      <text x="${cx}" y="${height - 8}" text-anchor="middle" font-size="9" fill="#999" transform="rotate(-45 ${cx} ${height - 8})">${label}</text>`;
+  }).join('');
+
+  container.innerHTML = `
+    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+      ${gridLines}
+      <path d="${pathD}" fill="none" stroke="${'var(--blue)'}" stroke-width="2.5" stroke-linejoin="round"/>
+      ${points}
+    </svg>`;
+}
+
+// ---- EXPORT / IMPORT ----
+$('exportBtn').addEventListener('click', () => {
+  const grades = loadGrades();
+  const data = JSON.stringify(grades, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `grades_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(`Exported ${grades.length} grades`);
+});
+
+$('importBtn').addEventListener('click', () => {
+  $('importFile').click();
+});
+
+$('importFile').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      if (!Array.isArray(imported)) throw new Error('Invalid format');
+
+      const existing = loadGrades();
+      const existingIds = new Set(existing.map(g => g.id));
+      const newGrades = imported.filter(g => !existingIds.has(g.id));
+
+      if (newGrades.length > 0) {
+        saveGrades([...newGrades, ...existing]);
+        showToast(`Imported ${newGrades.length} new grades`);
+      } else {
+        showToast('No new grades to import');
+      }
+
+      renderRecent();
+    } catch {
+      showToast('Invalid file format');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+// ---- INIT ----
+initForm();
+renderRecent();
+</script>
+</body>
+</html>
