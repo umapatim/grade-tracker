@@ -33,7 +33,6 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Header */
 .header {
   background: var(--blue);
   color: white;
@@ -43,16 +42,51 @@ body {
   z-index: 100;
 }
 
-.header h1 {
-  font-size: 20px;
-  font-weight: 600;
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 12px;
 }
 
-.tabs {
+.header h1 { font-size: 20px; font-weight: 600; }
+
+.sync-status {
+  font-size: 12px;
   display: flex;
-  gap: 0;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.85;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: none;
+  color: white;
 }
+
+.sync-status:active { opacity: 0.6; }
+
+.sync-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #8f8;
+}
+
+.sync-dot.offline { background: #fa0; }
+.sync-dot.error { background: #f66; }
+.sync-dot.syncing {
+  background: #fff;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.tabs { display: flex; gap: 0; }
 
 .tab {
   flex: 1;
@@ -68,22 +102,12 @@ body {
   transition: all 0.2s;
 }
 
-.tab.active {
-  color: white;
-  border-bottom-color: white;
-}
+.tab.active { color: white; border-bottom-color: white; }
 
-/* Main content */
-.content {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 16px;
-}
-
+.content { max-width: 600px; margin: 0 auto; padding: 16px; }
 .page { display: none; }
 .page.active { display: block; }
 
-/* Card */
 .card {
   background: var(--white);
   border-radius: var(--radius);
@@ -99,18 +123,8 @@ body {
   color: var(--gray);
 }
 
-/* Form */
-.form-row {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.form-group {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
+.form-row { display: flex; gap: 12px; margin-bottom: 14px; }
+.form-group { flex: 1; display: flex; flex-direction: column; }
 
 .form-group label {
   font-size: 12px;
@@ -141,28 +155,11 @@ body {
   padding-right: 32px;
 }
 
-.form-group input:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: var(--blue);
-}
+.form-group input:focus, .form-group select:focus { outline: none; border-color: var(--blue); }
 
-.score-input {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.score-input input {
-  width: 80px;
-  text-align: center;
-}
-
-.score-input .divider {
-  font-size: 20px;
-  color: var(--gray);
-  font-weight: 300;
-}
+.score-input { display: flex; align-items: center; gap: 8px; }
+.score-input input { width: 80px; text-align: center; }
+.score-input .divider { font-size: 20px; color: var(--gray); font-weight: 300; }
 
 .btn {
   width: 100%;
@@ -177,34 +174,12 @@ body {
 }
 
 .btn:active { opacity: 0.8; }
-
-.btn-primary {
-  background: var(--blue);
-  color: white;
-}
-
-.btn-outline {
-  background: transparent;
-  color: var(--blue);
-  border: 2px solid var(--blue);
-}
-
-.btn-small {
-  width: auto;
-  padding: 8px 16px;
-  font-size: 13px;
-  min-height: 36px;
-}
-
-.btn-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-}
-
+.btn-primary { background: var(--blue); color: white; }
+.btn-outline { background: transparent; color: var(--blue); border: 2px solid var(--blue); }
+.btn-small { width: auto; padding: 8px 16px; font-size: 13px; min-height: 36px; }
+.btn-row { display: flex; gap: 8px; margin-top: 8px; }
 .btn-row .btn { flex: 1; }
 
-/* Toast / feedback */
 .toast {
   position: fixed;
   bottom: 24px;
@@ -220,15 +195,9 @@ body {
   white-space: nowrap;
 }
 
-.toast.show {
-  transform: translateX(-50%) translateY(0);
-}
+.toast.show { transform: translateX(-50%) translateY(0); }
 
-/* Grade table */
-.grade-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+.grade-table { width: 100%; border-collapse: collapse; }
 
 .grade-table th {
   text-align: left;
@@ -248,9 +217,7 @@ body {
   vertical-align: middle;
 }
 
-.grade-table tr:last-child td {
-  border-bottom: none;
-}
+.grade-table tr:last-child td { border-bottom: none; }
 
 .grade-badge {
   display: inline-block;
@@ -284,22 +251,11 @@ body {
 
 .delete-btn:hover { color: var(--red); }
 
-.empty-state {
-  text-align: center;
-  padding: 32px 16px;
-  color: var(--gray);
-}
-
+.empty-state { text-align: center; padding: 32px 16px; color: var(--gray); }
 .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
 .empty-state p { font-size: 14px; }
 
-/* Reports */
-.stat-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
-}
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
 
 .stat-card {
   background: var(--gray-light);
@@ -308,10 +264,7 @@ body {
   text-align: center;
 }
 
-.stat-card .value {
-  font-size: 28px;
-  font-weight: 700;
-}
+.stat-card .value { font-size: 28px; font-weight: 700; }
 
 .stat-card .label {
   font-size: 11px;
@@ -321,30 +274,9 @@ body {
   margin-top: 4px;
 }
 
-.stat-card.full-width {
-  grid-column: 1 / -1;
-}
-
-/* Bar chart */
-.bar-chart {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.bar-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.bar-label {
-  width: 70px;
-  font-size: 13px;
-  font-weight: 500;
-  text-align: right;
-  flex-shrink: 0;
-}
+.bar-chart { display: flex; flex-direction: column; gap: 10px; }
+.bar-row { display: flex; align-items: center; gap: 8px; }
+.bar-label { width: 70px; font-size: 13px; font-weight: 500; text-align: right; flex-shrink: 0; }
 
 .bar-track {
   flex: 1;
@@ -352,31 +284,12 @@ body {
   background: var(--gray-light);
   border-radius: 6px;
   overflow: hidden;
-  position: relative;
 }
 
-.bar-fill {
-  height: 100%;
-  border-radius: 6px;
-  transition: width 0.5s ease;
-  min-width: 2px;
-}
+.bar-fill { height: 100%; border-radius: 6px; transition: width 0.5s ease; min-width: 2px; }
+.bar-value { width: 55px; font-size: 13px; font-weight: 600; text-align: left; flex-shrink: 0; }
 
-.bar-value {
-  width: 55px;
-  font-size: 13px;
-  font-weight: 600;
-  text-align: left;
-  flex-shrink: 0;
-}
-
-/* Filter pills */
-.filter-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
+.filter-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 
 .filter-pill {
   padding: 6px 14px;
@@ -389,50 +302,46 @@ body {
   min-height: 36px;
 }
 
-.filter-pill.active {
-  background: var(--blue);
-  color: white;
-  border-color: var(--blue);
-}
+.filter-pill.active { background: var(--blue); color: white; border-color: var(--blue); }
 
-/* Trend chart */
-.trend-container {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
+.trend-container { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.trend-container svg { display: block; }
 
-.trend-container svg {
-  display: block;
-}
+.data-section { padding-top: 8px; }
+.data-section p { font-size: 13px; color: var(--gray); margin-bottom: 12px; }
 
-/* Data management */
-.data-section {
-  padding-top: 8px;
-}
-
-.data-section p {
+/* Setup banner */
+.setup-banner {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 16px;
   font-size: 13px;
-  color: var(--gray);
-  margin-bottom: 12px;
+  color: #856404;
 }
 
-/* Responsive */
+.setup-banner a { color: #533f03; font-weight: 600; }
+
 @media (max-width: 400px) {
   .form-row { flex-direction: column; gap: 10px; }
-  .stat-grid { grid-template-columns: 1fr 1fr; }
   .grade-table th, .grade-table td { padding: 8px 4px; font-size: 13px; }
   .bar-label { width: 55px; font-size: 12px; }
 }
 
-/* Hidden file input */
 #importFile { display: none; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>Grade Tracker</h1>
+  <div class="header-top">
+    <h1>Grade Tracker</h1>
+    <button class="sync-status" id="syncStatus" title="Click to sync">
+      <span class="sync-dot" id="syncDot"></span>
+      <span id="syncText">Synced</span>
+    </button>
+  </div>
   <div class="tabs">
     <button class="tab active" data-tab="enter">Enter Grade</button>
     <button class="tab" data-tab="reports">Reports</button>
@@ -442,6 +351,11 @@ body {
 <div class="content">
   <!-- ENTER GRADE PAGE -->
   <div id="page-enter" class="page active">
+    <div class="setup-banner" id="setupBanner" style="display:none">
+      Sync is not configured. Grades are saved locally only.
+      To enable sync, set the APPS_SCRIPT_URL in the app code.
+    </div>
+
     <div class="card">
       <div class="form-row">
         <div class="form-group">
@@ -532,31 +446,209 @@ body {
 <div class="toast" id="toast"></div>
 
 <script>
-// ---- DATA LAYER ----
-const STORAGE_KEY = 'gradeTracker';
+// ==============================================================
+// CONFIGURATION - Set your Google Apps Script URL here
+// ==============================================================
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzctv5aeBf6yKRIqDyVNFz5IzthxFTO0vbdaq0LPvpcDYMywDbxMV2ug3aDoh0C1aE/exec';  // Paste your URL here after setup
+// ==============================================================
 
+const STORAGE_KEY = 'gradeTracker';
 const SUBJECTS = ['English', 'Latin', 'History', 'Science', 'Math', 'Religion', 'Arts'];
 const TYPES = ['Quiz', 'Test', 'Paper', 'Project', 'Exam'];
 
-function loadGrades() {
+function $(id) { return document.getElementById(id); }
+
+// ---- SYNC LAYER ----
+const sync = {
+  enabled: !!APPS_SCRIPT_URL,
+  syncing: false,
+
+  async fetchRemote() {
+    if (!this.enabled) return null;
+    try {
+      const res = await fetch(APPS_SCRIPT_URL + '?action=get');
+      const data = await res.json();
+      return data.grades || [];
+    } catch (e) {
+      console.error('Sync fetch failed:', e);
+      return null;
+    }
+  },
+
+  async pushGrade(grade) {
+    if (!this.enabled) return;
+    try {
+      await fetch(APPS_SCRIPT_URL + '?action=add', {
+        method: 'POST',
+        body: JSON.stringify(grade),
+      });
+    } catch (e) {
+      console.error('Sync push failed:', e);
+      this.queuePending('add', grade);
+    }
+  },
+
+  async removeGrade(id) {
+    if (!this.enabled) return;
+    try {
+      await fetch(APPS_SCRIPT_URL + '?action=delete&id=' + encodeURIComponent(id), {
+        method: 'POST',
+        body: '{}',
+      });
+    } catch (e) {
+      console.error('Sync delete failed:', e);
+      this.queuePending('delete', { id });
+    }
+  },
+
+  async fullSync() {
+    if (!this.enabled || this.syncing) return;
+    this.syncing = true;
+    updateSyncUI('syncing');
+
+    try {
+      const local = loadGradesLocal();
+      const remote = await this.fetchRemote();
+
+      if (remote === null) {
+        updateSyncUI('offline');
+        return;
+      }
+
+      // Merge: combine both, deduplicate by ID
+      const merged = new Map();
+      remote.forEach(g => merged.set(g.id, g));
+      local.forEach(g => merged.set(g.id, g));
+
+      const allGrades = Array.from(merged.values());
+      allGrades.sort((a, b) => b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
+
+      saveGradesLocal(allGrades);
+
+      // Push any local-only grades to remote
+      const remoteIds = new Set(remote.map(g => g.id));
+      const localOnly = local.filter(g => !remoteIds.has(g.id));
+      if (localOnly.length > 0) {
+        try {
+          await fetch(APPS_SCRIPT_URL + '?action=sync', {
+            method: 'POST',
+            body: JSON.stringify({ grades: localOnly }),
+          });
+        } catch (e) {
+          console.error('Sync push failed:', e);
+        }
+      }
+
+      // Process pending operations
+      await this.processPending();
+
+      updateSyncUI('synced');
+      renderRecent();
+    } catch (e) {
+      console.error('Full sync failed:', e);
+      updateSyncUI('error');
+    } finally {
+      this.syncing = false;
+    }
+  },
+
+  queuePending(action, data) {
+    const pending = JSON.parse(localStorage.getItem('gradeTracker_pending') || '[]');
+    pending.push({ action, data, ts: Date.now() });
+    localStorage.setItem('gradeTracker_pending', JSON.stringify(pending));
+  },
+
+  async processPending() {
+    const pending = JSON.parse(localStorage.getItem('gradeTracker_pending') || '[]');
+    if (pending.length === 0) return;
+
+    const remaining = [];
+    for (const op of pending) {
+      try {
+        if (op.action === 'add') {
+          await fetch(APPS_SCRIPT_URL + '?action=add', {
+            method: 'POST',
+            body: JSON.stringify(op.data),
+          });
+        } else if (op.action === 'delete') {
+          await fetch(APPS_SCRIPT_URL + '?action=delete&id=' + encodeURIComponent(op.data.id), {
+            method: 'POST',
+            body: '{}',
+          });
+        }
+      } catch {
+        remaining.push(op);
+      }
+    }
+    localStorage.setItem('gradeTracker_pending', JSON.stringify(remaining));
+  }
+};
+
+function updateSyncUI(state) {
+  const dot = $('syncDot');
+  const text = $('syncText');
+  dot.className = 'sync-dot';
+
+  if (!sync.enabled) {
+    dot.classList.add('offline');
+    text.textContent = 'Local only';
+    return;
+  }
+
+  switch (state) {
+    case 'synced':
+      text.textContent = 'Synced';
+      break;
+    case 'syncing':
+      dot.classList.add('syncing');
+      text.textContent = 'Syncing...';
+      break;
+    case 'offline':
+      dot.classList.add('offline');
+      text.textContent = 'Offline';
+      break;
+    case 'error':
+      dot.classList.add('error');
+      text.textContent = 'Sync error';
+      break;
+  }
+}
+
+// Click sync button to force sync
+$('syncStatus').addEventListener('click', () => {
+  if (sync.enabled) {
+    sync.fullSync();
+  } else {
+    showToast('Set APPS_SCRIPT_URL to enable sync');
+  }
+});
+
+// ---- LOCAL STORAGE ----
+function loadGradesLocal() {
   try {
     return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
   } catch { return []; }
 }
 
-function saveGrades(grades) {
+function saveGradesLocal(grades) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(grades));
 }
 
+function loadGrades() {
+  return loadGradesLocal();
+}
+
 function addGrade(entry) {
-  const grades = loadGrades();
+  const grades = loadGradesLocal();
   grades.unshift(entry);
-  saveGrades(grades);
+  saveGradesLocal(grades);
+  sync.pushGrade(entry);
 }
 
 function deleteGrade(id) {
-  const grades = loadGrades().filter(g => g.id !== id);
-  saveGrades(grades);
+  const grades = loadGradesLocal().filter(g => g.id !== id);
+  saveGradesLocal(grades);
+  sync.removeGrade(id);
 }
 
 // ---- GRADING ----
@@ -576,10 +668,7 @@ function getLetterGrade(pct) {
   return 'F';
 }
 
-function getGradeClass(letter) {
-  const first = letter.charAt(0);
-  return 'grade-' + first.toLowerCase();
-}
+function getGradeClass(letter) { return 'grade-' + letter.charAt(0).toLowerCase(); }
 
 function getGPA(pct) {
   if (pct >= 97) return 4.0;
@@ -603,9 +692,6 @@ function getBarColor(pct) {
   if (pct >= 70) return '#f9ab00';
   return '#ea4335';
 }
-
-// ---- UI HELPERS ----
-function $(id) { return document.getElementById(id); }
 
 function showToast(msg) {
   const t = $('toast');
@@ -632,8 +718,7 @@ document.querySelectorAll('.tab').forEach(tab => {
 
 // ---- GRADE ENTRY ----
 function initForm() {
-  const today = new Date().toISOString().split('T')[0];
-  $('gradeDate').value = today;
+  $('gradeDate').value = new Date().toISOString().split('T')[0];
 }
 
 $('submitGrade').addEventListener('click', () => {
@@ -643,40 +728,22 @@ $('submitGrade').addEventListener('click', () => {
   const earned = parseFloat($('gradeEarned').value);
   const possible = parseFloat($('gradePossible').value);
 
-  if (!date || !subject || !type) {
-    showToast('Please fill in all fields');
-    return;
-  }
-  if (isNaN(earned) || isNaN(possible) || possible <= 0) {
-    showToast('Please enter a valid score');
-    return;
-  }
-  if (earned < 0) {
-    showToast('Score cannot be negative');
-    return;
-  }
+  if (!date || !subject || !type) { showToast('Please fill in all fields'); return; }
+  if (isNaN(earned) || isNaN(possible) || possible <= 0) { showToast('Please enter a valid score'); return; }
+  if (earned < 0) { showToast('Score cannot be negative'); return; }
 
   const percentage = Math.round((earned / possible) * 10000) / 100;
   const letterGrade = getLetterGrade(percentage);
 
   addGrade({
     id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-    date,
-    subject,
-    type,
-    earned,
-    possible,
-    percentage,
-    letterGrade
+    date, subject, type, earned, possible, percentage, letterGrade
   });
 
   showToast(`${letterGrade} (${percentage}%) added!`);
-
-  // Reset score fields, keep date/subject/type for quick re-entry
   $('gradeEarned').value = '';
   $('gradePossible').value = '';
   $('gradeEarned').focus();
-
   renderRecent();
 });
 
@@ -686,19 +753,14 @@ function renderRecent() {
   const container = $('recentGrades');
 
   if (grades.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="icon">📝</div>
-        <p>No grades yet. Add your first grade above!</p>
-      </div>`;
+    container.innerHTML = '<div class="empty-state"><div class="icon">📝</div><p>No grades yet. Add your first grade above!</p></div>';
     return;
   }
 
   const recent = grades.slice(0, 20);
-  let html = `<table class="grade-table">
-    <thead><tr>
-      <th>Date</th><th>Subject</th><th>Type</th><th>Score</th><th>Grade</th><th></th>
-    </tr></thead><tbody>`;
+  let html = `<table class="grade-table"><thead><tr>
+    <th>Date</th><th>Subject</th><th>Type</th><th>Score</th><th>Grade</th><th></th>
+  </tr></thead><tbody>`;
 
   recent.forEach(g => {
     html += `<tr>
@@ -736,37 +798,19 @@ function renderReports() {
     return;
   }
 
-  // Overview stats
   const allPcts = grades.map(g => g.percentage);
   const avgPct = allPcts.reduce((a, b) => a + b, 0) / allPcts.length;
   const avgGPA = grades.map(g => getGPA(g.percentage)).reduce((a, b) => a + b, 0) / grades.length;
   const avgLetter = getLetterGrade(avgPct);
 
   $('overviewStats').innerHTML = `
-    <div class="stat-card">
-      <div class="value" style="color:${getBarColor(avgPct)}">${avgLetter}</div>
-      <div class="label">Overall Grade</div>
-    </div>
-    <div class="stat-card">
-      <div class="value">${avgPct.toFixed(1)}%</div>
-      <div class="label">Average</div>
-    </div>
-    <div class="stat-card">
-      <div class="value">${avgGPA.toFixed(2)}</div>
-      <div class="label">GPA</div>
-    </div>
-    <div class="stat-card">
-      <div class="value">${grades.length}</div>
-      <div class="label">Total Grades</div>
-    </div>`;
+    <div class="stat-card"><div class="value" style="color:${getBarColor(avgPct)}">${avgLetter}</div><div class="label">Overall Grade</div></div>
+    <div class="stat-card"><div class="value">${avgPct.toFixed(1)}%</div><div class="label">Average</div></div>
+    <div class="stat-card"><div class="value">${avgGPA.toFixed(2)}</div><div class="label">GPA</div></div>
+    <div class="stat-card"><div class="value">${grades.length}</div><div class="label">Total Grades</div></div>`;
 
-  // Subject chart
   renderBarChart('subjectChart', grades, SUBJECTS, 'subject');
-
-  // Type chart
   renderBarChart('typeChart', grades, TYPES, 'type');
-
-  // Trend chart
   renderTrendFilter(grades);
 }
 
@@ -777,39 +821,24 @@ function renderBarChart(containerId, grades, categories, field) {
   categories.forEach(cat => {
     const catGrades = grades.filter(g => g[field] === cat);
     if (catGrades.length === 0) {
-      html += `<div class="bar-row">
-        <div class="bar-label">${cat}</div>
-        <div class="bar-track"><div class="bar-fill" style="width:0"></div></div>
-        <div class="bar-value" style="color:#ccc">--</div>
-      </div>`;
+      html += `<div class="bar-row"><div class="bar-label">${cat}</div><div class="bar-track"><div class="bar-fill" style="width:0"></div></div><div class="bar-value" style="color:#ccc">--</div></div>`;
       return;
     }
-
     const avg = catGrades.reduce((a, g) => a + g.percentage, 0) / catGrades.length;
     const letter = getLetterGrade(avg);
     const color = getBarColor(avg);
-
-    html += `<div class="bar-row">
-      <div class="bar-label">${cat}</div>
-      <div class="bar-track">
-        <div class="bar-fill" style="width:${avg}%;background:${color}"></div>
-      </div>
-      <div class="bar-value" style="color:${color}">${avg.toFixed(0)}% ${letter}</div>
-    </div>`;
+    html += `<div class="bar-row"><div class="bar-label">${cat}</div><div class="bar-track"><div class="bar-fill" style="width:${avg}%;background:${color}"></div></div><div class="bar-value" style="color:${color}">${avg.toFixed(0)}% ${letter}</div></div>`;
   });
 
   html += '</div>';
   container.innerHTML = html;
 }
 
-// ---- TREND CHART ----
 let trendSubject = 'All';
 
 function renderTrendFilter(grades) {
   const container = $('trendFilter');
-  const subjects = ['All', ...SUBJECTS];
-
-  container.innerHTML = subjects.map(s =>
+  container.innerHTML = ['All', ...SUBJECTS].map(s =>
     `<button class="filter-pill ${s === trendSubject ? 'active' : ''}" data-subject="${s}">${s}</button>`
   ).join('');
 
@@ -826,16 +855,13 @@ function renderTrendFilter(grades) {
 function renderTrendChart(grades) {
   const container = $('trendChart');
   let filtered = [...grades];
-  if (trendSubject !== 'All') {
-    filtered = filtered.filter(g => g.subject === trendSubject);
-  }
+  if (trendSubject !== 'All') filtered = filtered.filter(g => g.subject === trendSubject);
 
   if (filtered.length < 2) {
     container.innerHTML = '<div class="empty-state"><p>Need at least 2 grades to show a trend.</p></div>';
     return;
   }
 
-  // Sort by date ascending
   filtered.sort((a, b) => a.date.localeCompare(b.date));
 
   const padding = { top: 20, right: 20, bottom: 40, left: 40 };
@@ -844,7 +870,6 @@ function renderTrendChart(grades) {
   const chartW = width - padding.left - padding.right;
   const chartH = height - padding.top - padding.bottom;
 
-  // Scale
   const minPct = Math.max(0, Math.min(...filtered.map(g => g.percentage)) - 5);
   const maxPct = Math.min(100, Math.max(...filtered.map(g => g.percentage)) + 5);
   const range = maxPct - minPct || 1;
@@ -852,12 +877,10 @@ function renderTrendChart(grades) {
   function x(i) { return padding.left + (i / (filtered.length - 1)) * chartW; }
   function y(pct) { return padding.top + chartH - ((pct - minPct) / range) * chartH; }
 
-  // Build path
   let pathD = filtered.map((g, i) =>
     `${i === 0 ? 'M' : 'L'} ${x(i).toFixed(1)} ${y(g.percentage).toFixed(1)}`
   ).join(' ');
 
-  // Grid lines
   let gridLines = '';
   for (let pct = Math.ceil(minPct / 10) * 10; pct <= maxPct; pct += 10) {
     const yy = y(pct).toFixed(1);
@@ -865,68 +888,55 @@ function renderTrendChart(grades) {
     gridLines += `<text x="${padding.left - 6}" y="${yy}" text-anchor="end" font-size="10" fill="#999" dy="3">${pct}%</text>`;
   }
 
-  // Points and labels
   let points = filtered.map((g, i) => {
     const cx = x(i).toFixed(1);
     const cy = y(g.percentage).toFixed(1);
     const color = getBarColor(g.percentage);
-    const label = formatDate(g.date);
-    return `
-      <circle cx="${cx}" cy="${cy}" r="5" fill="${color}" stroke="white" stroke-width="2"/>
-      <text x="${cx}" y="${height - 8}" text-anchor="middle" font-size="9" fill="#999" transform="rotate(-45 ${cx} ${height - 8})">${label}</text>`;
+    return `<circle cx="${cx}" cy="${cy}" r="5" fill="${color}" stroke="white" stroke-width="2"/>
+      <text x="${cx}" y="${height - 8}" text-anchor="middle" font-size="9" fill="#999" transform="rotate(-45 ${cx} ${height - 8})">${formatDate(g.date)}</text>`;
   }).join('');
 
-  container.innerHTML = `
-    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-      ${gridLines}
-      <path d="${pathD}" fill="none" stroke="${'var(--blue)'}" stroke-width="2.5" stroke-linejoin="round"/>
-      ${points}
-    </svg>`;
+  container.innerHTML = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+    ${gridLines}
+    <path d="${pathD}" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linejoin="round"/>
+    ${points}
+  </svg>`;
 }
 
 // ---- EXPORT / IMPORT ----
 $('exportBtn').addEventListener('click', () => {
   const grades = loadGrades();
-  const data = JSON.stringify(grades, null, 2);
-  const blob = new Blob([data], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
+  const blob = new Blob([JSON.stringify(grades, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
-  a.href = url;
+  a.href = URL.createObjectURL(blob);
   a.download = `grades_${new Date().toISOString().split('T')[0]}.json`;
   a.click();
-  URL.revokeObjectURL(url);
+  URL.revokeObjectURL(a.href);
   showToast(`Exported ${grades.length} grades`);
 });
 
-$('importBtn').addEventListener('click', () => {
-  $('importFile').click();
-});
+$('importBtn').addEventListener('click', () => $('importFile').click());
 
 $('importFile').addEventListener('change', (e) => {
   const file = e.target.files[0];
   if (!file) return;
-
   const reader = new FileReader();
   reader.onload = (ev) => {
     try {
       const imported = JSON.parse(ev.target.result);
-      if (!Array.isArray(imported)) throw new Error('Invalid format');
-
-      const existing = loadGrades();
+      if (!Array.isArray(imported)) throw new Error('Invalid');
+      const existing = loadGradesLocal();
       const existingIds = new Set(existing.map(g => g.id));
       const newGrades = imported.filter(g => !existingIds.has(g.id));
-
       if (newGrades.length > 0) {
-        saveGrades([...newGrades, ...existing]);
+        saveGradesLocal([...newGrades, ...existing]);
         showToast(`Imported ${newGrades.length} new grades`);
+        if (sync.enabled) sync.fullSync();
       } else {
         showToast('No new grades to import');
       }
-
       renderRecent();
-    } catch {
-      showToast('Invalid file format');
-    }
+    } catch { showToast('Invalid file format'); }
   };
   reader.readAsText(file);
   e.target.value = '';
@@ -935,6 +945,21 @@ $('importFile').addEventListener('change', (e) => {
 // ---- INIT ----
 initForm();
 renderRecent();
+
+// Show setup banner if sync not configured
+if (!sync.enabled) {
+  $('setupBanner').style.display = 'block';
+  updateSyncUI('offline');
+} else {
+  // Initial sync on page load
+  sync.fullSync();
+  // Sync every 60 seconds
+  setInterval(() => sync.fullSync(), 60000);
+  // Sync when page becomes visible again
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) sync.fullSync();
+  });
+}
 </script>
 </body>
 </html>
