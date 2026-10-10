@@ -32,7 +32,7 @@ English, Writing, Algebra 2, Biology, Latin 2, Religion (9th grade)
 
 ## Test Types
 
-Quiz, Test, Paper, Project, Exam
+Quiz, Test, Paper, Essay, Project, Exam, HW
 
 ## Setup
 
