@@ -700,7 +700,17 @@ function showToast(msg) {
 }
 
 function formatDate(dateStr) {
-  const d = new Date(dateStr + 'T00:00:00');
+  // Normal case: dateStr is 'YYYY-MM-DD' from the date input. Some older
+  // entries were stored in a different (unknown) format and this strict
+  // parse silently produced "Invalid Date" -- fall back to a looser parse,
+  // and finally to the raw string, rather than showing that to the user.
+  let d = new Date(dateStr + 'T00:00:00');
+  if (isNaN(d.getTime())) {
+    d = new Date(dateStr);
+  }
+  if (isNaN(d.getTime())) {
+    return dateStr || '—';
+  }
   return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
